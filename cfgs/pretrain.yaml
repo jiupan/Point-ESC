@@ -1,0 +1,73 @@
+optimizer : {
+  type: AdamW,
+  kwargs: {
+  lr : 0.001,
+  weight_decay : 0.05
+}}
+
+scheduler: {
+  type: CosLR,
+  kwargs: {
+    epochs: 300,
+    initial_epochs : 10
+}}
+
+dataset : {
+  train : { _base_: cfgs/dataset_configs/ShapeNet-55.yaml,
+            others: {subset: 'train', npoints: 1024, sample_with_fps: True}},
+  val : { _base_: cfgs/dataset_configs/ShapeNet-55.yaml,
+            others: {subset: 'test', npoints: 1024, sample_with_fps: True}},
+  test : { _base_: cfgs/dataset_configs/ShapeNet-55.yaml,
+            others: {subset: 'test', npoints: 1024, sample_with_fps: True}}}
+
+model : {
+  NAME: Point_ESC,
+  group_size: 32,
+  num_group: 64,
+  loss: cdl2,
+  use_resa: True,
+  transformer_config: {
+    mask_ratio: 0.6,
+    mask_type: 'rand',
+    trans_dim: 384,
+    encoder_dims: 384,
+    depth: 12,
+    drop_path_rate: 0.1,
+    num_heads: 6,
+    decoder_depth: 4,
+    decoder_num_heads: 6,
+    consistent_mask: True,
+  },
+  resa_config: {
+    proj_dim: 256,
+    hidden_dim: 512,
+    temperature: 0.1,
+    sinkhorn_iters: 3,
+    sinkhorn_epsilon: 0.05,
+    similarity_type: 'cosine',
+    distance_type: 'kl',
+    lambda: 0.1,
+    adaptive_weight: True,
+    progressive_training: True,
+    start_epoch: 60,
+    warmup_epochs: 120,
+    max_epochs: 300,
+    feature_detach: False,
+  }
+}
+
+npoints: 1024
+total_bs : 128
+step_per_update : 1
+max_epoch : 300
+
+
+use_dual_view: True
+dual_view_config: {
+  jitter_std: 0.005,
+  jitter_clip: 0.025,
+  scale_low: 0.9,
+  scale_high: 1.1,
+  translate_range: 0.05,
+  dropout_ratio: 0.05,
+} 
