@@ -33,7 +33,6 @@ model : {
 
 
 npoints: 2048
-train_rotation: true
 total_bs : 32
 step_per_update : 1
 max_epoch : 300

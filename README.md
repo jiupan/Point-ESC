@@ -91,7 +91,6 @@ Fine-tuning loads the pretrained encoder into `PointTransformer`. The ESC projec
 and reconstruction decoder are not used downstream. Classification uses the CLS token
 concatenated with max-pooled patch tokens and trains the backbone and classification head.
 ModelNet40 uses 1,024 points/64 patches; ScanObjectNN uses 2,048 xyz points/128 patches.
-The three ScanObjectNN fine-tuning configs enable random rotation about the y-axis for Point-ESC. The local Point-MAE baseline uses random scaling and translation.
 
 ## Classification evaluation
 
