@@ -56,6 +56,10 @@ class Acc_Metric:
 
 def run_net(args, config, train_writer=None, val_writer=None):
     logger = get_logger(args.log_name)
+    train_transform = train_transforms
+    if config.get('train_rotation', False):
+        train_transform = data_transforms.PointcloudRotate()
+
     # build dataset
     (train_sampler, train_dataloader), (_, test_dataloader),= builder.dataset_builder(args, config.dataset.train), \
                                                             builder.dataset_builder(args, config.dataset.val)
@@ -142,7 +146,7 @@ def run_net(args, config, train_writer=None, val_writer=None):
             fps_idx = fps_idx[:, np.random.choice(point_all, npoints, False)]
             points = pointnet2_utils.gather_operation(points.transpose(1, 2).contiguous(), fps_idx).transpose(1, 2).contiguous()  # (B, N, 3)
             # import pdb; pdb.set_trace()
-            points = train_transforms(points)
+            points = train_transform(points)
 
             ret = base_model(points)
 
